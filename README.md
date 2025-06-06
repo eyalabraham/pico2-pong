@@ -2,6 +2,8 @@
 
 Video generator and "pong" game for RPi Pico 2 for NTSC composite video input. The project was created as an exercise in using Raspberry Pi Pico 0 peripherals.
 
+![Pico pong screenshot](pico-pong.jpg)
+
 ## Resources
 
 - NTSC video timing https://www.batsocks.co.uk/readme/video_timing.htm
@@ -30,7 +32,7 @@ The `io.c` module handles low level IO configuration and access, the `video.c` m
 
 ## Audio beeps
 
-TBD
+Audio tones are generated using Pico 2 PWM.
 
 ## GPIO pin assignments
 
