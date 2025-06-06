@@ -30,6 +30,12 @@ HSTX and DMA used to generate video pixel and sync signals. DMA moved 32bit word
 
 The `io.c` module handles low level IO configuration and access, the `video.c` module provides a set of video utility functions for drawing and text output, and the `ponggame.c` contains game code.
 
+## Video timing
+
+The 12MHz HSTX clock generates a bit shift time of 0.0834uSec. This bit shift time is the basis for the number of 32bit words and the corresponding bits that are either '1' or '0' in order to produce the resulting waveforms for Sync and pixels.
+For example, a Sync pulse is 4.7uSec in duration. This requires 56 bit shifts given by (4.7 / 0.0834). This results is populating the Sync bit area with 56 consecutive '1' bits, which, when shifted by the HSTX, will produce a 4.7uSec long pulse.
+Similarly, within the active video line that lasts 53.5uSec it is possible to generate ~640 pixels as given by (53.5 / 0.0834).
+
 ## Audio beeps
 
 Audio tones are generated using Pico 2 PWM.
@@ -37,16 +43,27 @@ Audio tones are generated using Pico 2 PWM.
 ## GPIO pin assignments
 
 ```
-                            350
+
+Note: all digital GPIO outputs are connected through 74LS14
+
+                            173
 (HSTX1) GP13 pin-17 o-----/\/\/\/-----+             Pixel video
                                       |
-                            1K        |
+                            645       |
 (HSTX0) GP12 pin-16 o--+--/\/\/\/-----+-----------o SYNC + Pixel video signal to monitor/TV
                        |
                        +--------------------------o SYNC for scope external trigger
   
+(PWM CH2A) pin-6    o--------+
+                             |
+                             \    4.7u  
+                        10K  / <---||-------------o Audio out (~1V p-p)
+                             \
+                             /
+                             |
+                            GND
+
 (ADC0) pin-31       o-----------------------------o 'paddle' center tap
     
-(PWM CH2A) pin-6    o-----------------------------o Audio out
 ```
 
